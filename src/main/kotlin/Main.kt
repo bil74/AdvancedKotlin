@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+import java.util.*
 
 fun main() {
     // Create some sample employees
@@ -24,9 +25,6 @@ fun main() {
     val receipt5 = Receipt(listOf(item1, item3, item5), employee1, dateFormat.parse("13/04/2024"))
 
 
-    //pbkav
-    receipt1.displayInfo()
-
     // TODO -> wrangling data! :]
     /**
      * Put together all the receipts. Then perform the following operations:
@@ -40,4 +38,88 @@ fun main() {
      * - Find which item/items were sold the most (in quantity), or count how many items were sold from each item type
      * - Finally find which items earned the most money
      */
+
+    val receipts = arrayListOf<Receipt>()
+
+    receipts.add(receipt1)
+    receipts.add(receipt2)
+    receipts.add(receipt3)
+    receipts.add(receipt4)
+    receipts.add(receipt5)
+
+    //introduce new class containing date and sum amount
+    class DateWithAmount(
+        val date: Date? = null,
+        var amountSum: Double = 0.0
+    ){
+        fun addAmt(amt: Double){
+            amountSum += amt
+        }
+    }
+
+    //introduce new class containing date and sum amount
+    class EmployeeWithAmount(
+        val empId: Int = 0,
+        val empName: String? = null,
+        var amountSum: Double = 0.0
+    ){
+        fun addAmt(amt: Double){
+            amountSum += amt
+        }
+    }
+
+    val datesWithAmount = arrayListOf<DateWithAmount>()
+    val employeesWithAmount = arrayListOf<EmployeeWithAmount>()
+
+    //create and fill groups
+    for (r in receipts){
+        //add date with amount
+        if (datesWithAmount.firstOrNull { it.date == r.transactionDate } == null){
+            val x = DateWithAmount(r.transactionDate, r.calculateTotalPrice())
+            datesWithAmount.add(x)
+        }
+        else{
+            datesWithAmount.firstOrNull { it.date == r.transactionDate }?.addAmt(r.calculateTotalPrice())
+        }
+
+        //add employee with amount
+        if (employeesWithAmount.firstOrNull { it.empId == r.employee.id } == null){
+            val x = EmployeeWithAmount(r.employee.id, r.employee.name, r.calculateTotalPrice())
+            employeesWithAmount.add(x)
+        }
+        else{
+            employeesWithAmount.firstOrNull { it.empId == r.employee.id }?.addAmt(r.calculateTotalPrice())
+        }
+
+    }
+
+    datesWithAmount.sortByDescending { it.amountSum  }
+    /*
+        //print group by date in descending order
+        for (da in datesWithAmount){
+            println("Receipts at date ${da.date}, sum amount is ${da.amountSum}:")
+            for(r in receipts){
+                if (r.transactionDate == da.date){
+                    r.displayInfo()
+                }
+            }
+            println("---------------------------------")
+        }
+    */
+    println("Date ${datesWithAmount[0].date} was with the biggest daily amount (${datesWithAmount[0].amountSum})!")
+
+    employeesWithAmount.sortByDescending { it.amountSum  }
+/*
+    //print group by employees in descending order
+    for (ea in employeesWithAmount){
+        println("Employee #${ea.empId}, sum amount is ${ea.amountSum}:")
+        for(r in receipts){
+            if (r.employee.id == ea.empId){
+                r.displayInfo()
+            }
+        }
+        println("---------------------------------")
+    }
+*/
+    println("Employee ${employeesWithAmount[0].empName} (id:${employeesWithAmount[0].empId}) managed to have the biggest amount (${employeesWithAmount[0].amountSum}) so far!")
 }
