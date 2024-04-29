@@ -68,8 +68,22 @@ fun main() {
         }
     }
 
+    //introduce new class containing date and sum amount
+    class ItemsWithPieces(
+        val itemId: Int = 0,
+        val itemName: String? = null,
+        var amountSum: Double = 0.0,
+        var pieces: Int = 0
+    ){
+        fun addPcs(amt: Double){
+            pieces ++
+            amountSum += amt
+        }
+    }
+
     val datesWithAmount = arrayListOf<DateWithAmount>()
     val employeesWithAmount = arrayListOf<EmployeeWithAmount>()
+    val itemsWithPieces = arrayListOf<ItemsWithPieces>()
 
     //create and fill groups
     for (r in receipts){
@@ -90,6 +104,18 @@ fun main() {
         else{
             employeesWithAmount.firstOrNull { it.empId == r.employee.id }?.addAmt(r.calculateTotalPrice())
         }
+
+        //add items with pieces
+        for (i in r.items){
+            if (itemsWithPieces.firstOrNull { it.itemId == i.id } == null){
+                val x = ItemsWithPieces(i.id, i.name, i.price, 1)
+                itemsWithPieces.add(x)
+            }
+            else{
+                itemsWithPieces.firstOrNull { it.itemId == i.id }?.addPcs(i.price)
+            }
+        }
+
 
     }
 
@@ -121,5 +147,23 @@ fun main() {
         println("---------------------------------")
     }
 */
+
     println("Employee ${employeesWithAmount[0].empName} (id:${employeesWithAmount[0].empId}) managed to have the biggest amount (${employeesWithAmount[0].amountSum}) so far!")
+
+    itemsWithPieces.sortByDescending { it.pieces  }
+/*
+    //print items with number of pieces in descending order
+    for (ip in itemsWithPieces){
+        println("Item #${ip.itemId} (${ip.itemName}), with pieces of ${ip.pieces}:")
+        println("---------------------------------")
+    }
+ */
+
+    println("Item ${itemsWithPieces[0].itemName} (id:${itemsWithPieces[0].itemId}) has the highest number of pieces sold (${itemsWithPieces[0].pieces}) so far!")
+
+    itemsWithPieces.sortByDescending { it.amountSum  }
+    println("Item ${itemsWithPieces[0].itemName} (id:${itemsWithPieces[0].itemId}) has the highest combined amount (${itemsWithPieces[0].amountSum}) so far!")
+
+
+
 }
