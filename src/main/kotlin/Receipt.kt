@@ -7,9 +7,11 @@ class Receipt(
 ) {
     // Function to calculate the total price of the receipt
     fun calculateTotalPrice(): Double {
-        // TODO implement
-
-        return 0.0
+        var priceCalculated: Double  = 0.0
+        for(i in items){
+            priceCalculated += i.price
+        }
+        return priceCalculated
     }
 
     // Function to display receipt information

@@ -24,6 +24,9 @@ fun main() {
     val receipt5 = Receipt(listOf(item1, item3, item5), employee1, dateFormat.parse("13/04/2024"))
 
 
+    //pbkav
+    receipt1.displayInfo()
+
     // TODO -> wrangling data! :]
     /**
      * Put together all the receipts. Then perform the following operations:
